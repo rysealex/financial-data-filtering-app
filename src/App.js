@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FaCaretDown, FaCaretUp } from "react-icons/fa";
+import { FaCaretDown, FaCaretUp, FaPlus, FaMinus } from "react-icons/fa";
 import Caret from "./caret";
 
 const App = () => {
@@ -8,7 +8,9 @@ const App = () => {
   const [filteredData, setFilteredData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [filterDate, setFilterDate] = useState("");
+  //const [filterDate, setFilterDate] = useState("");
+  const [filterMinDate, setFilterMinDate] = useState("");
+  const [filterMaxDate, setFilterMaxDate] = useState("");
   //const [filterRevenue, setFilterRevenue] = useState("");
   const [filterMinRevenue, setFilterMinRevenue] = useState("");
   const [filterMaxRevenue, setFilterMaxRevenue] = useState("");
@@ -16,6 +18,9 @@ const App = () => {
   const [filterMinNetIncome, setFilterMinNetIncome] = useState("");
   const [filterMaxNetIncome, setFilterMaxNetIncome] = useState("");
   const [sort, setSort] = useState({ key: "", direction: "asc " });
+  const [dateOpen, setDateOpen] = useState(false);
+  const [revenueOpen, setRevenueOpen] = useState(false);
+  const [netIncomeOpen, setNetIncomeOpen] = useState(false);
 
   const sortTable = (column) => {
     let direction = "asc";
@@ -51,8 +56,15 @@ const App = () => {
 
   useEffect(() => {
     let filtered = incomeStatement;
-    if (filterDate) {
-      filtered = filtered.filter(item => item.date.includes(filterDate));
+    if (filterMinDate || filterMaxDate) {
+      const minDate = parseFloat(filterMinDate);
+      const maxDate = parseFloat(filterMaxDate);
+      filtered = filtered.filter(item => {
+        const date = parseFloat(item.date);
+        const inRange = (isNaN(minDate) || date >= minDate) &&
+          (isNaN(maxDate) || date <= maxDate);
+        return inRange;
+      });
     }
     if (filterMinRevenue || filterMaxRevenue) {
       const minRevenue = parseFloat(filterMinRevenue);
@@ -86,12 +98,14 @@ const App = () => {
       });
     }
     setFilteredData(filtered);
-  }, [filterMaxNetIncome, filterMinNetIncome, filterMaxRevenue, filterMinRevenue, filterDate, incomeStatement, sort]);
+  }, [filterMaxNetIncome, filterMinNetIncome, filterMaxRevenue, filterMinRevenue,
+    filterMaxDate, filterMinDate, incomeStatement, sort]);
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-lg p-6">
         <h1 className="text-2xl font-bold text-center mb-6">Financial Data Filtering App</h1>
+        <h2 className="text-1xl font-bold text-center mb-6">AAPL (Apple) Annual Income Statements</h2>
         {loading && (
           <div className="text-center text-lg text-gray-500">Loading...</div>
         )}
@@ -99,53 +113,85 @@ const App = () => {
           <div className="text-center text-lg text-red-500">{error}</div>
         )}
         <div className="mb-4">
-          <label htmlFor="dateFilter" className="block text-sm font-medium text-gray-700">Filter by date</label>
-          <input
-            type="text"
-            id="dateFilter"
-            placeholder="Enter year"
-            value={filterDate}
-            onChange={(e) => setFilterDate(e.target.value)}
-            className="mt-1 p-2 w-full border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-          />
+          <button
+            onClick={() => setDateOpen(!dateOpen)}
+            className="block text-sm font-medium text-gray-700 flex justify-between items-center"
+          >
+            Filter by date
+            {dateOpen ? <FaMinus className="ml-2" /> : <FaPlus className="ml-2" />}
+          </button>
+          {dateOpen && (
+            <div className="flex space-x-2">
+              <input
+                type="text"
+                placeholder="Enter min year"
+                value={filterMinDate}
+                onChange={(e) => setFilterMinDate(e.target.value)}
+                className="mt-1 p-2 w-full border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              />
+              <input
+                type="text"
+                placeholder="Enter max year"
+                value={filterMaxDate}
+                onChange={(e) => setFilterMaxDate(e.target.value)}
+                className="mt-1 p-2 w-full border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+          )}
         </div>
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">Filter by revenue</label>
-          <div className="flex space-x-2">
-            <input
-              type="number"
-              placeholder="Enter min amount"
-              value={filterMinRevenue}
-              onChange={(e) => setFilterMinRevenue(e.target.value)}
-              className="mt-1 p-2 w-full border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-            />
-            <input
-              type="number"
-              placeholder="Enter max amount"
-              value={filterMaxRevenue}
-              onChange={(e) => setFilterMaxRevenue(e.target.value)}
-              className="mt-1 p-2 w-full border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-            />
-          </div>
+          <button
+            onClick={() => setRevenueOpen(!revenueOpen)}
+            className="block text-sm font-medium text-gray-700 flex justify-between items-center"
+          >
+            Filter by revenue
+            {revenueOpen ? <FaMinus className="ml-2" /> : <FaPlus className="ml-2" />}
+          </button>
+          {revenueOpen && (
+            <div className="flex space-x-2">
+              <input
+                type="number"
+                placeholder="Enter min amount"
+                value={filterMinRevenue}
+                onChange={(e) => setFilterMinRevenue(e.target.value)}
+                className="mt-1 p-2 w-full border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              />
+              <input
+                type="number"
+                placeholder="Enter max amount"
+                value={filterMaxRevenue}
+                onChange={(e) => setFilterMaxRevenue(e.target.value)}
+                className="mt-1 p-2 w-full border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+          )}
         </div>
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">Filter by net income</label>
-          <div className="flex space-x-2">
-            <input
-              type="number"
-              placeholder="Enter min amount"
-              value={filterMinNetIncome}
-              onChange={(e) => setFilterMinNetIncome(e.target.value)}
-              className="mt-1 p-2 w-full border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-            />
-            <input
-              type="number"
-              placeholder="Enter max amount"
-              value={filterMaxNetIncome}
-              onChange={(e) => setFilterMaxNetIncome(e.target.value)}
-              className="mt-1 p-2 w-full border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-            />
-          </div>
+          <button
+            onClick={() => setNetIncomeOpen(!netIncomeOpen)}
+            className="block text-sm font-medium text-gray-700 flex justify-between items-center"
+          >
+            Filter by net income
+            {netIncomeOpen ? <FaMinus className="ml-2" /> : <FaPlus className="ml-2" />}
+          </button>
+          {netIncomeOpen && (
+            <div className="flex space-x-2">
+              <input
+                type="number"
+                placeholder="Enter min amount"
+                value={filterMinNetIncome}
+                onChange={(e) => setFilterMinNetIncome(e.target.value)}
+                className="mt-1 p-2 w-full border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              />
+              <input
+                type="number"
+                placeholder="Enter max amount"
+                value={filterMaxNetIncome}
+                onChange={(e) => setFilterMaxNetIncome(e.target.value)}
+                className="mt-1 p-2 w-full border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+          )}
         </div>
         {!loading && !error && (
           <div className="overflow-x-auto">
