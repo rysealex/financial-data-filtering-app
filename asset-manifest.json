@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/rysealex/financial-data-filtering-app.git/static/css/main.6a576150.css",
+    "main.js": "/rysealex/financial-data-filtering-app.git/static/js/main.f876e96f.js",
+    "static/js/488.ebe4c7ff.chunk.js": "/rysealex/financial-data-filtering-app.git/static/js/488.ebe4c7ff.chunk.js",
+    "index.html": "/rysealex/financial-data-filtering-app.git/index.html",
+    "main.6a576150.css.map": "/rysealex/financial-data-filtering-app.git/static/css/main.6a576150.css.map",
+    "main.f876e96f.js.map": "/rysealex/financial-data-filtering-app.git/static/js/main.f876e96f.js.map",
+    "488.ebe4c7ff.chunk.js.map": "/rysealex/financial-data-filtering-app.git/static/js/488.ebe4c7ff.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.6a576150.css",
+    "static/js/main.f876e96f.js"
+  ]
+}
