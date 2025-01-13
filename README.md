@@ -9,7 +9,7 @@ This app is deployed using GitHub Pages.
 
 You can view the deployed app here:
 
-(https://rysealex.github.io/financial-data-filtering-app/)
+https://rysealex.github.io/financial-data-filtering-app/
 
 ## Prerequisites
 
